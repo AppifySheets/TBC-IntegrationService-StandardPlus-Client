@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppifySheets.Immutable.BankIntegrationTypes\AppifySheets.Immutable.BankIntegrationTypes.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="*" />
+        <PackageReference Include="Newtonsoft.Json" Version="*" />
+        <PackageReference Include="Serilog" Version="*" />
+    </ItemGroup>
+
+</Project>

@@ -1,28 +1,28 @@
-# TBC Bank IntegrationService Standard+ C#/net8 Client
-## Why - official implementation is error-prone, easy-to-mess-up and requires a lot of manual fixing
-### Current library attempts to wrap soap calls in immutable, type-safe way
+﻿using System.Diagnostics;
+using AppifySheets.Immutable.BankIntegrationTypes;
+using AppifySheets.TBC.IntegrationService.Client.ApiConfiguration;
+using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.GetAccountMovements;
+using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.GetPaymentOrderStatus;
+using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSinglePaymentOrders;
+using AppifySheets.TBC.IntegrationService.Client.TBC_Services;
 
-#### You will require 4 things from the TBC Bank - 1) `.pfx` certificate, 2) `Username`, 3) `Password` and 4) `certificate_password`
-
-Service Documentation by the TBC Bank is here - https://developers.tbcbank.ge/docs/dbi-overview
-
-## Following services are implemented:
-* [Import Single Payments](https://developers.tbcbank.ge/docs/import-single-payments)
-* [Account Movement](https://developers.tbcbank.ge/docs/account-movement)
-
-### Usage
-See the [Demo](AppifySheets.TBC.IntegrationService.Client.DemoConsole/Program.cs)
-
-```csharp
-var credentials = new TBCApiCredentials("Username", "Password"); // Obtain API Credentials & Certificate with password from the Bank/Banker
-var tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentials, "TBCIntegrationService.pfx", "certificate_password");
+var credentials = new TBCApiCredentials("Username", "Password");
+var tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentials, "TBCIntegrationService.pfx", "CertificatePassword");
 
 var tbcSoapCaller = new TBCSoapCaller(tbcApiCredentialsWithCertificate);
 
 var accountMovements =
     await GetAccountMovementsHelper.GetAccountMovement(new Period(new DateTime(2023, 9, 1), new DateTime(2023, 9, 26)), tbcSoapCaller);
 
-var checkStatus = await tbcSoapCaller.GetDeserialized(new GetPaymentOrderStatusRequestIo(1632027071));
+// return;
+
+// var checkStatus = await Worker
+//     .GetDeserialized(new SoapBaseWithDeserializer<GetPaymentOrderStatusResponseIo>(tbcSoapCaller)
+//     {
+//         RequestSoap = new RequestSoapGetPaymentOrderStatus(1632027071)
+//     });
+
+var checkStatus2 = await tbcSoapCaller.GetDeserialized(new GetPaymentOrderStatusRequestIo(1632027071));
 
 var ownAccountGEL = BankAccountWithCurrencyV.Create(new BankAccountV("GE31TB7467936080100003"), CurrencyV.GEL).Value;
 var ownAccountUSD = BankAccountWithCurrencyV.Create(new BankAccountV("GE47TB7467936170100001"), CurrencyV.USD).Value;
@@ -95,4 +95,5 @@ var toTreasury = await tbcSoapCaller.GetDeserialized(
     new ImportSinglePaymentOrdersRequestIo(
         new TreasuryTransferPaymentOrderIo(101001000)
             { TransferTypeRecordSpecific = transferTypeRecordSpecific }));
-```
+
+Debugger.Break();
