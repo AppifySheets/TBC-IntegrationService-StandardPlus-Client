@@ -1,6 +1,5 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Net.Http;
 using System.Security.Authentication;
 using System.Security.Cryptography.X509Certificates;
@@ -15,20 +14,12 @@ namespace AppifySheets.TBC.IntegrationService.Client.TBC_Services;
 
 public class TBCSoapCaller
 {
-    readonly string _certificateFileName;
-    readonly string _certificatePassword;
-    readonly TBCApiCredentials _credentials;
+    readonly TBCApiCredentialsWithCertificate _tbcApiCredentialsWithCertificate;
 
-    public TBCSoapCaller(string certificateFileName, string certificatePassword, TBCApiCredentials credentials)
+    public TBCSoapCaller()
     {
-        if (!certificateFileName.EndsWith(".pfx"))
-            throw new InvalidOperationException("Certificate must have a '.pfx' extension");
-        if(!Path.Exists(certificateFileName))
-            throw new InvalidOperationException($"Certificate does not exist at location [{Path.GetFullPath(certificateFileName)}]");
-        
-        _certificateFileName = certificateFileName;
-        _certificatePassword = certificatePassword;
-        _credentials = credentials;
+        var credentials = new TBCApiCredentials("2684679_1", "3a$5ti2PLBd8Ut^yfi");
+        _tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentials, "TBCIntegrationService.pfx", "XR_w;,64");
     }
 
     static PerformedActionSoapEnvelope GetPerformedActionFor(TBCApiCredentials credentials, PerformedActionSoapEnvelope.TBCServiceAction serviceAction, 
@@ -59,7 +50,7 @@ public class TBCSoapCaller
     }
     public Task<Result<string>> CallTBCServiceAsync(SoapBase soapBase)
     {
-        var template = GetPerformedActionFor(_credentials, soapBase.TBCServiceAction, soapBase.SoapXml);
+        var template = GetPerformedActionFor(_tbcApiCredentialsWithCertificate.TBCApiCredentials, soapBase.TBCServiceAction, soapBase.SoapXml);
         
         return CallTBCServiceAsync(template);
     }
@@ -98,7 +89,7 @@ public class TBCSoapCaller
         X509Certificate2Collection GetCertificates()
         {
             var collection = new X509Certificate2Collection();
-            collection.Import(_certificateFileName, _certificatePassword, X509KeyStorageFlags.PersistKeySet);
+            collection.Import(_tbcApiCredentialsWithCertificate.CertificateFileName, _tbcApiCredentialsWithCertificate.CertificatePassword, X509KeyStorageFlags.PersistKeySet);
             return collection;
         }
     }
