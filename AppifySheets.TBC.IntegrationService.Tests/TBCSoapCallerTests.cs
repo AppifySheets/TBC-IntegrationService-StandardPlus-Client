@@ -3,6 +3,7 @@ using AppifySheets.TBC.IntegrationService.Client.ApiConfiguration;
 using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.GetAccountMovements;
 using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.GetPaymentOrderStatus;
 using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSinglePaymentOrders;
+using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.PasswordChangeRelated;
 using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.PostboxMessages;
 using AppifySheets.TBC.IntegrationService.Client.TBC_Services;
 using Shouldly;
@@ -17,12 +18,24 @@ public class TBCSoapCallerTests
 
     public TBCSoapCallerTests()
     {
-        var credentials = new TBCApiCredentials("API_USERNAME", "API_PASSWORD");
-        var tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentials, "CERTIFICATE_FILE_NAME.pfx", "CERTIFICATE_PASSWORD");
+        var credentials = new TBCApiCredentials("integration_username", "initial_integration_password");
+        var tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentials, "certificate_file_name.pfx", "certificate_password");
 
         _tbcSoapCaller = new TBCSoapCaller(tbcApiCredentialsWithCertificate);
     }
 
+    [Fact]
+    public async Task PasswordChangeIsSuccessful()
+    {
+        var credentialsBeforeChangingPassword = new TBCApiCredentials("integration_username", "initial_integration_password");
+        var tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentialsBeforeChangingPassword, "certificate_file_name.pfx", "certificate_password");
+
+        var tbcSoapCaller = new TBCSoapCaller(tbcApiCredentialsWithCertificate);
+        
+        var checkStatus2 = await tbcSoapCaller.GetDeserialized(new ChangePasswordRequestIo("new_integration_password", "9_digit_digipass_code"));
+        checkStatus2.IsSuccess.ShouldBeTrue();
+    }
+    
     [Fact]
     public async Task AccountMovements_returns_values()
     {

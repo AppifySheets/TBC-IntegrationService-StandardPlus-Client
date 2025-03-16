@@ -3,7 +3,7 @@
 namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.PasswordChangeRelated;
 
 [UsedImplicitly]
-public record ChangePasswordRequestIo(string NewPassword) : RequestSoap<ChangePasswordResponseIo>()
+public record ChangePasswordRequestIo(string NewPassword, string DigipassCode) : RequestSoap<ChangePasswordResponseIo>()
 {
     public override string SoapXml()
         => $"""
@@ -12,5 +12,6 @@ public record ChangePasswordRequestIo(string NewPassword) : RequestSoap<ChangePa
              </myg:ChangePasswordRequestIo>
             """;
 
+    public override string Nonce => DigipassCode;
     public override TBCServiceAction TBCServiceAction => TBCServiceAction.ChangePassword;
 }

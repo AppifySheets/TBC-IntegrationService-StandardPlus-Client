@@ -12,6 +12,7 @@ public abstract record RequestSoap<TResponseDeserializeInto> where TResponseDese
     public abstract string SoapXml();
 
     public abstract TBCServiceAction TBCServiceAction { get; }
+    public virtual string Nonce => "1111";
 }
 
 public static class DeserializationExtensions

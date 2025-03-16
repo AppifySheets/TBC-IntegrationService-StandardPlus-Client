@@ -25,46 +25,56 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
 
         return response.Value.DeserializeInto<TDeserializeInto>();
     }
-
+    
     static PerformedActionSoapEnvelope GetPerformedActionFor(TBCApiCredentials credentials, TBCServiceAction serviceAction,
         [StringSyntax(StringSyntaxAttribute.Xml)]
-        string xmlBody)
+        string xmlBody, string nonce)
     {
-        var xmlDoc = new XmlDocument();
-        xmlDoc.LoadXml($"""
-                        <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                        xmlns:myg="http://www.mygemini.com/schemas/mygemini"
-                        xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
-                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-                           <soapenv:Header>
-                           <wsse:Security>
-                            <wsse:UsernameToken>
-                              <wsse:Username>{credentials.Username}</wsse:Username>
-                              <wsse:Password>{credentials.Password}</wsse:Password>
-                              <wsse:Nonce>1111</wsse:Nonce>
-                            </wsse:UsernameToken>
-                           </wsse:Security>
-                           </soapenv:Header>
-                           <soapenv:Body>
-                             {xmlBody}
-                           </soapenv:Body>
-                        </soapenv:Envelope>
-                        """);
-
-        if (Debugger.IsAttached)
+        try
         {
-            var xmlText =  xmlDoc.InnerXml.FormatXml();
-        }
+            var xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml($"""
+                            <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                            xmlns:myg="http://www.mygemini.com/schemas/mygemini"
+                            xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd"
+                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+                               <soapenv:Header>
+                               <wsse:Security>
+                                <wsse:UsernameToken>
+                                  <wsse:Username>{credentials.Username}</wsse:Username>
+                                  <wsse:Password>{credentials.Password}</wsse:Password>
+                                  <wsse:Nonce>{nonce}</wsse:Nonce>
+                                </wsse:UsernameToken>
+                               </wsse:Security>
+                               </soapenv:Header>
+                               <soapenv:Body>
+                                 {xmlBody}
+                               </soapenv:Body>
+                            </soapenv:Envelope>
+                            """);
 
-        return new PerformedActionSoapEnvelope(xmlDoc, serviceAction);
+            if (Debugger.IsAttached)
+            {
+                var xmlText = xmlDoc.InnerXml.FormatXml();
+            }
+
+            return new PerformedActionSoapEnvelope(xmlDoc, serviceAction);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     public Task<Result<string>> CallTBCServiceAsync<TDeserializeInto>(RequestSoap<TDeserializeInto> requestSoap) where TDeserializeInto : ISoapResponse
     {
-        var template = GetPerformedActionFor(tbcApiCredentialsWithCertificate.TBCApiCredentials, requestSoap.TBCServiceAction, requestSoap.SoapXml());
+        var template = GetPerformedActionFor(tbcApiCredentialsWithCertificate.TBCApiCredentials, requestSoap.TBCServiceAction, requestSoap.SoapXml(), requestSoap.Nonce);
 
         return CallTBCServiceAsync(template);
     }
+
+    
 
     async Task<Result<string>> CallTBCServiceAsync(PerformedActionSoapEnvelope performedActionSoapEnvelope)
     {
@@ -91,8 +101,6 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
                 .ConvertFailure<string>()
                 .OnFailureCompensate(r => r.FormatXml());
 
-        
-
         using var response = responseResult.Value;
 
         var responseContent = await response.Content.ReadAsStringAsync();
@@ -113,6 +121,4 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
             return collection;
         }
     }
-
-    
 }
