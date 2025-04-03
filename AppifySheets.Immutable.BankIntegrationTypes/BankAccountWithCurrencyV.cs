@@ -1,21 +1,15 @@
 ﻿using System;
-using CSharpFunctionalExtensions;
 
 namespace AppifySheets.Immutable.BankIntegrationTypes;
 
-public class BankAccountWithCurrencyV
+public class BankAccountWithCurrencyV(BankAccountV bankAccountNumber, CurrencyV currencyV)
 {
-    BankAccountWithCurrencyV(BankAccountV bankAccountNumber, CurrencyV currencyV)
-    {
-        BankAccountNumber = bankAccountNumber ?? throw new ArgumentNullException(nameof(bankAccountNumber));
+    // public static Result<BankAccountWithCurrencyV> Create(BankAccountV bankAccountNumber, CurrencyV currencyV) => Result.Try(() => new BankAccountWithCurrencyV(bankAccountNumber, currencyV));
 
-        CurrencyV = currencyV ?? throw new ArgumentNullException(nameof(currencyV));
-    }
+    public BankAccountV BankAccountNumber { get; } = bankAccountNumber ?? throw new ArgumentNullException(nameof(bankAccountNumber));
+    public CurrencyV CurrencyV { get; } = currencyV ?? throw new ArgumentNullException(nameof(currencyV));
 
-    public static Result<BankAccountWithCurrencyV> Create(BankAccountV bankAccountNumber, CurrencyV currencyV) => Result.Try(() => new BankAccountWithCurrencyV(bankAccountNumber, currencyV));
-
-    public BankAccountV BankAccountNumber { get; }
-    public CurrencyV CurrencyV { get; }
+    public override string ToString() => $"{BankAccountNumber}{CurrencyV}";
 }
 
 public record CurrencyV
