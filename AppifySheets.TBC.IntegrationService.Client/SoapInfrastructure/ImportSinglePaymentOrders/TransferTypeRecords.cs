@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 
 namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSinglePaymentOrders;
 
-public record TransferWithinBankPaymentOrderIo : TransferTypeRecord, IRecipient
+public record TransferWithinBankPaymentOrderIo : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription
 {
     public required BankAccountWithCurrencyV RecipientAccountWithCurrency { get; init; }
 }
@@ -14,13 +14,12 @@ public record TransferToOtherBankForeignCurrencyPaymentOrderIo(
     string BeneficiaryBankName,
     string ChargeDetails,
     BankAccountWithCurrencyV RecipientAccountWithCurrency)
-    : TransferTypeRecord, IRecipient, IBeneficiaryForCurrencyTransfer;
+    : TransferTypeRecord, IBeneficiaryForCurrencyTransfer, IRecipient, IBeneficiaryName, IDescription;
 
 public record TransferToOtherBankNationalCurrencyPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency, string BeneficiaryTaxCode)
-    : TransferTypeRecord, IRecipient, IBeneficiaryTaxCode;
+    : TransferTypeRecord, IBeneficiaryTaxCode, IRecipient, IBeneficiaryName, IDescription;
 
-public record TreasuryTransferPaymentOrderIo(long TreasuryCode)
-    : TransferTypeRecord, ITreasury;
+public record TreasuryTransferPaymentOrderIo(long TreasuryCode) : TransferTypeRecord, ITreasury;
 
 [UsedImplicitly]
-public record TransferToOwnAccountPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency, string Description) : TransferTypeRecord, IRecipient;
+public record TransferToOwnAccountPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency, string Description) : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription;

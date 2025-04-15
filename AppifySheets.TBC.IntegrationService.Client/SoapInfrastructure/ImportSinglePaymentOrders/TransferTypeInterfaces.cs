@@ -33,10 +33,14 @@ public abstract record TransferTypeRecord
 //     public string? AdditionalDescription { get; }
 // }
 
-// public interface IBeneficiaryName
-// {
-//     public string BeneficiaryName { get; }
-// }
+public interface IBeneficiaryName
+{
+    public string BeneficiaryName { get; }
+}
+public interface IDescription
+{
+    public string Description { get; }
+}
 
 public interface ITreasury
 {
@@ -48,17 +52,15 @@ public interface IRecipient
     public BankAccountWithCurrencyV RecipientAccountWithCurrency { get; }
 }
 
-public interface IBeneficiaryTaxCode //: IBeneficiaryName
+public interface IBeneficiaryTaxCode
 {
     public string BeneficiaryTaxCode { get; }
 }
 
-public interface IBeneficiaryForCurrencyTransfer // : IBeneficiaryName
+public interface IBeneficiaryForCurrencyTransfer
 {
     public string BeneficiaryAddress { get; }
     public string BeneficiaryBankCode { get; }
     public string BeneficiaryBankName { get; }
-    // public string IntermediaryBankCode { get; }
-    // public string IntermediaryBankName { get; }
     public string ChargeDetails { get; }
 }

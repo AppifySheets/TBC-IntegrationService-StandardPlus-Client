@@ -10,11 +10,11 @@ namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.GetAccou
 
 public abstract record GetAccountMovementsHelper
 {
-    public static async Task<Result<IReadOnlyCollection<AccountMovement>>> GetAccountMovement(Period period, TBCSoapCaller tbcSoapCaller)
+    public static async Task<Result<IReadOnlyCollection<AccountMovement>>> GetAccountMovementAsync(Period period, TBCSoapCaller tbcSoapCaller)
     {
         Log.Information("TBC - getting data for {Period}", period);
 
-        var tbcServiceResult = await GetData(0);
+        var tbcServiceResult = await GetDataAsync(0);
         if (tbcServiceResult.IsFailure) return tbcServiceResult.ConvertFailure<IReadOnlyCollection<AccountMovement>>();
 
         var deserializedData = tbcServiceResult.Value;
@@ -27,7 +27,7 @@ public abstract record GetAccountMovementsHelper
 
         for (var i = 1; i < pagesTotal; i++)
         {
-            var tbcServiceResult1 = await GetData(i);
+            var tbcServiceResult1 = await GetDataAsync(i);
             if (tbcServiceResult1.IsFailure) return tbcServiceResult1.ConvertFailure<IReadOnlyCollection<AccountMovement>>();
 
             var deserializedData1 = tbcServiceResult1.Value;
@@ -42,7 +42,7 @@ public abstract record GetAccountMovementsHelper
 
         return accountMovements;
 
-        async Task<Result<GetAccountMovementsResponseIo>> GetData(int index)
+        async Task<Result<GetAccountMovementsResponseIo>> GetDataAsync(int index)
         {
             var result = await tbcSoapCaller.CallTBCServiceAsync(new GetAccountMovementsRequestIo(period, index));
             return result.IsFailure

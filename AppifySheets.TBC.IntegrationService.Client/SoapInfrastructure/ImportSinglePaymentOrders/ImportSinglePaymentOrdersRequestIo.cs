@@ -32,8 +32,8 @@ public record ImportSinglePaymentOrdersRequestIo(TransferTypeRecord TransferType
                       </myg:amount>
                       <myg:position>3</myg:position>
                       <myg:additionalDescription>{TransferType.AdditionalDescription}</myg:additionalDescription>
-                      <myg:description>{TransferType.Description}</myg:description>
-                      <myg:beneficiaryName>{TransferType.BeneficiaryName}</myg:beneficiaryName>
+                      {TransferType.Is<IDescription>(b => $"<myg:description>{b.Description}</myg:description>")}
+                      {TransferType.Is<IBeneficiaryName>(b => $"<myg:beneficiaryName>{b.BeneficiaryName}</myg:beneficiaryName>")}
                       {TransferType.Is<IBeneficiaryTaxCode>(b => $"<myg:beneficiaryTaxCode>{b.BeneficiaryTaxCode}</myg:beneficiaryTaxCode>")}
                       {TransferType.Is<IBeneficiaryForCurrencyTransfer>(b
                           => $"""
