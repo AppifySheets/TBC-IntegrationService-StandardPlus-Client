@@ -12,7 +12,7 @@ public record BankAccountV
 
         var iban = Regex.Match(accountNumber, pattern2Match).Groups[1].Value;
 	
-        if(string.IsNullOrEmpty(iban)) throw new InvalidOperationException($"Account#: [{accountNumber}] doesn't seem to be in an IBAN format!");
+        // if(string.IsNullOrEmpty(iban)) throw new InvalidOperationException($"Account#: [{accountNumber}] doesn't seem to be in an IBAN format!");
         
         AccountNumber = accountNumber;
     }
