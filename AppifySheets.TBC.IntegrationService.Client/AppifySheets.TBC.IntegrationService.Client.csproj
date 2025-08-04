@@ -2,6 +2,22 @@
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
+        
+        <!-- NuGet Package Metadata -->
+        <PackageId>AppifySheets.TBC.IntegrationService.Client</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>AppifySheets</Authors>
+        <Company>AppifySheets</Company>
+        <Description>Type-safe C#/.NET 8 client for TBC Bank IntegrationService Standard+. Provides immutable, functional wrapper around TBC's SOAP API for payment operations, account movements, and treasury transfers.</Description>
+        <PackageTags>TBC;Bank;Integration;SOAP;Payment;Banking;Georgia</PackageTags>
+        <RepositoryUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageProjectUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +28,10 @@
         <PackageReference Include="JetBrains.Annotations" Version="*" />
         <PackageReference Include="Newtonsoft.Json" Version="*" />
         <PackageReference Include="Serilog" Version="*" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
 </Project>
