@@ -29,6 +29,8 @@
         "Compile",
         "Pack",
         "Publish",
+        "PublishToGitHub",
+        "PublishToNuGet",
         "Restore",
         "ShowVersion",
         "Test"
@@ -112,6 +114,11 @@
             "Debug",
             "Release"
           ]
+        },
+        "GitHubToken": {
+          "type": "string",
+          "description": "GitHub Token for publishing packages",
+          "default": "Secrets must be entered via 'nuke :secrets [profile]'"
         },
         "NuGetApiKey": {
           "type": "string",
