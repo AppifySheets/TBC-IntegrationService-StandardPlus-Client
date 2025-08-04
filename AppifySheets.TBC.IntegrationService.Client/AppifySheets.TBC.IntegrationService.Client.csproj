@@ -5,19 +5,15 @@
         
         <!-- NuGet Package Metadata -->
         <PackageId>AppifySheets.TBC.IntegrationService.Client</PackageId>
-        <Version>1.0.0</Version>
-        <Authors>AppifySheets</Authors>
-        <Company>AppifySheets</Company>
+        <!-- Version is now inherited from Directory.Build.props which reads from VERSION file -->
+        <!-- Authors and Company are inherited from Directory.Build.props -->
         <Description>Type-safe C#/.NET 8 client for TBC Bank IntegrationService Standard+. Provides immutable, functional wrapper around TBC's SOAP API for payment operations, account movements, and treasury transfers.</Description>
         <PackageTags>TBC;Bank;Integration;SOAP;Payment;Banking;Georgia</PackageTags>
-        <RepositoryUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</PackageProjectUrl>
+        <!-- Repository information inherited from Directory.Build.props -->
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <IncludeSymbols>true</IncludeSymbols>
-        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <!-- Documentation and symbol settings inherited from Directory.Build.props -->
+        <IsPackable>true</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>

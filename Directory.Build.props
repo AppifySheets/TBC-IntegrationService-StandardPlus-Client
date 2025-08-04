@@ -1,0 +1,36 @@
+<Project>
+  <PropertyGroup>
+    <!-- Read version from VERSION file in repository root -->
+    <!-- This ensures consistent versioning across all projects -->
+    <VersionFile>$([MSBuild]::GetPathOfFileAbove('VERSION', '$(MSBuildProjectDirectory)'))</VersionFile>
+    <Version Condition="Exists('$(VersionFile)')">$([System.IO.File]::ReadAllText('$(VersionFile)').Trim())</Version>
+    
+    <!-- Fallback version if VERSION file doesn't exist -->
+    <Version Condition="'$(Version)' == ''">1.0.0</Version>
+    
+    <!-- Package version can be overridden by CI/CD for releases -->
+    <PackageVersion>$(Version)</PackageVersion>
+    
+    <!-- Common package metadata for all projects -->
+    <Authors>AppifySheets</Authors>
+    <Company>AppifySheets</Company>
+    <Product>TBC IntegrationService Client</Product>
+    <Copyright>Copyright © AppifySheets $([System.DateTime]::Now.Year)</Copyright>
+    
+    <!-- Repository information -->
+    <RepositoryUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</PackageProjectUrl>
+    
+    <!-- Enable deterministic builds for CI/CD -->
+    <Deterministic>true</Deterministic>
+    <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
+    
+    <!-- Generate documentation files for packaged libraries -->
+    <GenerateDocumentationFile Condition="'$(IsPackable)' == 'true'">true</GenerateDocumentationFile>
+    
+    <!-- Include symbols for debugging -->
+    <IncludeSymbols Condition="'$(IsPackable)' == 'true'">true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+</Project>

@@ -72,7 +72,8 @@ public class TBCSoapCallerTests
             Amount = 0.01m,
             BeneficiaryName = "TEST",
             SenderAccountWithCurrency = ownAccountGEL,
-            Description = "TEST"
+            Description = "TEST",
+            PersonalNumber = null // Adding required PersonalNumber field
         };
 
         var withinBankGel2 = await _tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(

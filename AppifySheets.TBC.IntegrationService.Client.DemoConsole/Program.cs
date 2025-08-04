@@ -33,7 +33,8 @@ var transferTypeRecordSpecific = new TransferTypeRecordSpecific
     Amount = 0.01m,
     BeneficiaryName = "TEST",
     SenderAccountWithCurrency = ownAccountGEL,
-    Description = "TEST"
+    Description = "TEST",
+    PersonalNumber = null // Adding required PersonalNumber field
 };
 
 var withinBankGel2 = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(
