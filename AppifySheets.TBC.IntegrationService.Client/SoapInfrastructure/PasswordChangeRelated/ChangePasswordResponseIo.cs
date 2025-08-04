@@ -12,37 +12,37 @@ using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure;
 public class ChangePasswordResponseIo : ISoapResponse { 
 
     [XmlElement(ElementName="message")] 
-    public string Message { get; set; } 
+    public string? Message { get; init; } 
 
     [XmlAttribute(AttributeName="i")] 
-    public string I { get; set; } 
+    public string? I { get; init; } 
 
     [XmlText] 
-    public string Text { get; set; } 
+    public string? Text { get; init; } 
 }
 
 [XmlRoot(ElementName="Body")]
 public class Body { 
 
     [XmlElement(ElementName="ChangePasswordResponseIo")] 
-    public ChangePasswordResponseIo ChangePasswordResponseIo { get; set; } 
+    public ChangePasswordResponseIo? ChangePasswordResponseIo { get; init; } 
 }
 
 [XmlRoot(ElementName="Envelope")]
 public class Envelope { 
 
     [XmlElement(ElementName="Header")] 
-    public object Header { get; set; } 
+    public object? Header { get; init; } 
 
     [XmlElement(ElementName="Body")] 
-    public Body Body { get; set; } 
+    public required Body Body { get; init; } 
 
     [XmlAttribute(AttributeName="SOAP-ENV")] 
-    public string SOAPENV { get; set; } 
+    public string? SOAPENV { get; init; } 
 
     [XmlAttribute(AttributeName="ns2")] 
-    public string Ns2 { get; set; } 
+    public string? Ns2 { get; init; } 
 
     [XmlText] 
-    public string Text { get; set; } 
+    public string? Text { get; init; } 
 }

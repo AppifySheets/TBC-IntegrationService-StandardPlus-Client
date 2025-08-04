@@ -14,45 +14,45 @@ using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure;
 public class AdditionalAttributes { 
 
     [XmlElement(ElementName="name")] 
-    public string Name { get; set; } 
+    public required string Name { get; init; } 
 
     [XmlElement(ElementName="value")] 
-    public DateTime Value { get; set; } 
+    public DateTime Value { get; init; } 
 }
 
 [XmlRoot(ElementName="messages")]
 public class Messages { 
 
     [XmlElement(ElementName="messageId")] 
-    public int MessageId { get; set; } 
+    public int MessageId { get; init; } 
 
     [XmlElement(ElementName="messageText")] 
-    public string MessageText { get; set; } 
+    public required string MessageText { get; init; } 
 
     [XmlElement(ElementName="messageType")] 
-    public string MessageType { get; set; } 
+    public required string MessageType { get; init; } 
 
     [XmlElement(ElementName="messageStatus")] 
-    public string MessageStatus { get; set; } 
+    public required string MessageStatus { get; init; } 
 
     [XmlElement(ElementName="additionalAttributes")] 
-    public List<AdditionalAttributes> AdditionalAttributes { get; set; } 
+    public List<AdditionalAttributes>? AdditionalAttributes { get; init; } 
 }
 
 [XmlRoot(ElementName="GetPostboxMessagesResponseIo")]
 public class GetPostboxMessagesResponseIo : ISoapResponse { 
 
     [XmlElement(ElementName="messages")] 
-    public List<Messages> Messages { get; set; } 
+    public List<Messages>? Messages { get; init; } 
 
     [XmlAttribute(AttributeName="xsi")] 
-    public string Xsi { get; set; } 
+    public string? Xsi { get; init; } 
 
     [XmlAttribute(AttributeName="xsd")] 
-    public string Xsd { get; set; } 
+    public string? Xsd { get; init; } 
 
     [XmlText] 
-    public string Text { get; set; } 
+    public string? Text { get; init; } 
 }
 
 [XmlRoot(ElementName="Root")]
@@ -62,8 +62,8 @@ public class Root {
     public GetPostboxMessagesResponseIo? GetPostboxMessagesResponseIo { get; set; } 
 
     [XmlAttribute(AttributeName="ns2")] 
-    public string Ns2 { get; set; } 
+    public string? Ns2 { get; init; } 
 
     [XmlText] 
-    public string Text { get; set; } 
+    public string? Text { get; init; } 
 }
