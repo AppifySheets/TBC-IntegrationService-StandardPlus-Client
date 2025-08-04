@@ -1,6 +1,21 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+    
+    <!-- NuGet Package Metadata -->
+    <PackageId>AppifySheets.Immutable.BankIntegrationTypes</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>AppifySheets</Authors>
+    <Company>AppifySheets</Company>
+    <Description>Immutable bank integration types and value objects for Georgian banking systems. Provides strongly-typed, functional data structures for bank accounts, currencies, and transfers.</Description>
+    <PackageTags>Banking;Immutable;ValueObjects;Georgia;TBC;Types</PackageTags>
+    <RepositoryUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</PackageProjectUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CSharpFunctionalExtensions" Version="*" />
