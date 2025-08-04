@@ -26,16 +26,6 @@ public abstract record TransferTypeRecord
     public string? AdditionalDescription => TransferTypeRecordSpecific.AdditionalDescription;
 }
 
-// public interface IDescription
-// {
-//     public string? Description { get; }
-// }
-
-// public interface IAdditionalDescription
-// {
-//     public string? AdditionalDescription { get; }
-// }
-
 public interface IBeneficiaryName
 {
     public string BeneficiaryName { get; }

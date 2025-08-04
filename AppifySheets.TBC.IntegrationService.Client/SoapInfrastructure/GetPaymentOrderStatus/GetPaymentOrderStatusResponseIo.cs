@@ -8,7 +8,7 @@ public class GetPaymentOrderStatusResponseIo : ISoapResponse
 { 
 
     [XmlElement(ElementName="status")] 
-    public string Status { get; init; }
+    public string? Status { get; init; }
 
     public PaymentStatusEnum PaymentStatus => Status switch
     {

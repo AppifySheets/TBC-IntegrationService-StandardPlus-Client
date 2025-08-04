@@ -3,8 +3,7 @@
 namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.GetPaymentOrderStatus;
 
 [UsedImplicitly]
-public record GetPaymentOrderStatusRequestIo(int SinglePaymentId)
-    : RequestSoap<GetPaymentOrderStatusResponseIo>
+public record GetPaymentOrderStatusRequestIo(int SinglePaymentId) : RequestSoap<GetPaymentOrderStatusResponseIo>
 {
     public override string SoapXml()
         => $"""
