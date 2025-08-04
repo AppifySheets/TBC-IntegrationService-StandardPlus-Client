@@ -22,6 +22,9 @@
     <RepositoryType>git</RepositoryType>
     <PackageProjectUrl>https://github.com/AppifySheets/TBC-IntegrationService-StandardPlus-Client</PackageProjectUrl>
     
+    <!-- Package icon - TBC Bank logo -->
+    <PackageIcon>icon.png</PackageIcon>
+    
     <!-- Enable deterministic builds for CI/CD -->
     <Deterministic>true</Deterministic>
     <ContinuousIntegrationBuild Condition="'$(CI)' == 'true'">true</ContinuousIntegrationBuild>
