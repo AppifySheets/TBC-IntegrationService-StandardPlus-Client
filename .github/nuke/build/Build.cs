@@ -24,6 +24,7 @@ using static Nuke.Common.Tools.DotNet.DotNetTasks;
     CacheKeyFiles = ["global.json", "**/*.csproj", "**/Directory.*.props"])]
 // GitHub Actions workflow for releases
 // Triggered when a new release is created, publishes NuGet packages
+// Publishes to both NuGet.org and GitHub Packages
 [GitHubActions(
     "release",
     GitHubActionsImage.UbuntuLatest,
@@ -47,6 +48,11 @@ class Build : NukeBuild
     [Parameter("NuGet API Key for publishing packages")]
     [Secret]
     readonly string NuGetApiKey;
+
+    // GitHub token for publishing packages to GitHub Packages
+    [Parameter("GitHub Token for publishing packages")]
+    [Secret]
+    readonly string GitHubToken;
 
     // Solution file reference
     [Solution(GenerateProjects = true)]
@@ -224,7 +230,7 @@ class Build : NukeBuild
 
     // Publish NuGet packages to NuGet.org
     // Only runs on release builds with valid API key
-    Target Publish => _ => _
+    Target PublishToNuGet => _ => _
         .DependsOn(Pack)
         .Requires(() => !string.IsNullOrEmpty(NuGetApiKey))
         .Requires(() => IsServerBuild)
@@ -250,6 +256,57 @@ class Build : NukeBuild
                     .SetTargetPath(package)));
 
             Log.Information("Successfully published {Count} packages to NuGet.org", packages.Count());
+        });
+
+    // Publish NuGet packages to GitHub Packages
+    // Publishes to GitHub Container Registry (ghcr.io)
+    Target PublishToGitHub => _ => _
+        .DependsOn(Pack)
+        .Requires(() => IsServerBuild)
+        .Executes(() =>
+        {
+            // GitHub token is provided automatically by GitHub Actions
+            var token = GitHubToken ?? Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+            
+            if (string.IsNullOrEmpty(token))
+            {
+                Log.Warning("GitHub token not available, skipping GitHub Packages publish");
+                return;
+            }
+
+            Log.Information("Publishing NuGet packages to GitHub Packages");
+
+            var packages = PackagesDirectory.GlobFiles("*.nupkg")
+                .Where(x => !x.Name.EndsWith(".symbols.nupkg", StringComparison.OrdinalIgnoreCase));
+
+            if (!packages.Any())
+            {
+                throw new Exception("No packages found to publish");
+            }
+
+            // GitHub Packages NuGet feed URL
+            var githubSource = "https://nuget.pkg.github.com/AppifySheets/index.json";
+
+            // Push each package to GitHub Packages
+            DotNetNuGetPush(s => s
+                .SetSource(githubSource)
+                .SetApiKey(token)
+                // Skip duplicate packages (in case of retry)
+                .SetSkipDuplicate(true)
+                .CombineWith(packages, (settings, package) => settings
+                    .SetTargetPath(package)));
+
+            Log.Information("Successfully published {Count} packages to GitHub Packages", packages.Count());
+        });
+
+    // Publish packages to all configured registries
+    // Combines publishing to NuGet.org and GitHub Packages
+    Target Publish => _ => _
+        .DependsOn(Pack)
+        .Triggers(PublishToNuGet, PublishToGitHub)
+        .Executes(() =>
+        {
+            Log.Information("Publishing packages to all configured registries");
         });
 
     // Helper target to display version information
