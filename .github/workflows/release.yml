@@ -16,7 +16,12 @@
 
 name: release
 
-on: [workflow_dispatch]
+on:
+  # Manual workflow dispatch for testing
+  workflow_dispatch:
+  # Trigger when a new GitHub release is published
+  release:
+    types: [published]
 
 jobs:
   ubuntu-latest:
