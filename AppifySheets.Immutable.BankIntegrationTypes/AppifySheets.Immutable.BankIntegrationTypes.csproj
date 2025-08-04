@@ -3,18 +3,8 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         
-        <!-- NuGet Package Metadata -->
-        <PackageId>AppifySheets.Immutable.BankIntegrationTypes</PackageId>
-        <!-- Version is inherited from Directory.Build.props which reads from VERSION file -->
-        <Description>Immutable bank integration types and value objects for TBC IntegrationService Client. Provides strongly-typed, immutable data structures for bank accounts, currencies, and periods.</Description>
-        <PackageTags>TBC;Bank;Immutable;Types;ValueObjects;Banking</PackageTags>
-        <!-- Repository info and other metadata inherited from Directory.Build.props -->
-        
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
-        
-        <!-- Mark as packable to create NuGet package -->
-        <IsPackable>true</IsPackable>
+        <!-- This is an internal library, not a separate NuGet package -->
+        <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
@@ -22,8 +12,4 @@
         <PackageReference Include="JetBrains.Annotations" Version="*" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="..\README.md" Pack="true" PackagePath="\" />
-        <None Include="..\icon.png" Pack="true" PackagePath="\" Condition="Exists('..\icon.png')" />
-    </ItemGroup>
 </Project>
