@@ -12,13 +12,13 @@ using Serilog;
 using static Nuke.Common.Tools.DotNet.DotNetTasks;
 
 // GitHub Actions workflow for PR validation
-// Runs on all pull requests to ensure code quality
-// Currently only compiles due to integration test requirements
+// Runs on all pull requests to ensure code quality and version bump
+// Checks compilation and verifies VERSION has been incremented
 [GitHubActions(
     "pr-validation",
     GitHubActionsImage.UbuntuLatest,
     On = [GitHubActionsTrigger.PullRequest],
-    InvokedTargets = [nameof(Compile)],
+    InvokedTargets = [nameof(CheckVersion), nameof(Compile)],
     EnableGitHubToken = true,
     PublishArtifacts = true,
     CacheKeyFiles = ["global.json", "**/*.csproj", "**/Directory.*.props"])]
@@ -261,4 +261,95 @@ class Build : NukeBuild
             Log.Information("IsLocalBuild: {IsLocalBuild}", IsLocalBuild);
             Log.Information("IsServerBuild: {IsServerBuild}", IsServerBuild);
         });
+
+    // Check that version has been incremented compared to main branch
+    // This ensures every PR includes a version bump
+    Target CheckVersion => _ => _
+        .Executes(() =>
+        {
+            // Only check version on PRs in CI environment
+            if (!IsServerBuild || GitHubActions.Instance?.EventName != "pull_request")
+            {
+                Log.Information("Skipping version check - not a PR build");
+                return;
+            }
+
+            Log.Information("Checking if VERSION has been incremented from main branch");
+            
+            // Get the current version from VERSION file
+            var currentVersion = Version;
+            Log.Information("Current version: {Version}", currentVersion);
+            
+            // Fetch main branch VERSION file content
+            var mainVersionContent = string.Empty;
+            try
+            {
+                // Fetch latest main branch
+                ProcessTasks.StartProcess("git", "fetch origin main", logOutput: false)
+                    .AssertZeroExitCode();
+                
+                // Get VERSION file content from main branch
+                var result = ProcessTasks.StartProcess("git", "show origin/main:VERSION", logOutput: false);
+                if (result.ExitCode == 0)
+                {
+                    mainVersionContent = string.Join("", result.Output).Trim();
+                }
+                else
+                {
+                    // VERSION file might not exist in main branch yet
+                    Log.Warning("VERSION file not found in main branch - assuming this is the first version");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warning("Could not fetch main branch VERSION: {Message}", ex.Message);
+                return;
+            }
+            
+            Log.Information("Main branch version: {Version}", mainVersionContent);
+            
+            // Parse versions for comparison
+            if (!TryParseVersion(currentVersion, out var current))
+            {
+                throw new Exception($"Invalid version format in VERSION file: {currentVersion}");
+            }
+            
+            if (!TryParseVersion(mainVersionContent, out var main))
+            {
+                throw new Exception($"Invalid version format in main branch: {mainVersionContent}");
+            }
+            
+            // Compare versions
+            if (current <= main)
+            {
+                throw new Exception($"Version must be incremented! Current: {currentVersion}, Main: {mainVersionContent}");
+            }
+            
+            Log.Information("✅ Version check passed: {Current} > {Main}", currentVersion, mainVersionContent);
+        });
+    
+    bool TryParseVersion(string versionString, out Version version)
+    {
+        version = null;
+        
+        // Handle semantic versioning (strip pre-release and build metadata)
+        var parts = versionString.Split('-', '+')[0].Split('.');
+        
+        if (parts.Length < 2 || parts.Length > 4)
+            return false;
+        
+        // Parse major.minor[.build[.revision]]
+        if (!int.TryParse(parts[0], out var major)) return false;
+        if (!int.TryParse(parts[1], out var minor)) return false;
+        
+        var build = 0;
+        var revision = 0;
+        
+        if (parts.Length > 2 && !int.TryParse(parts[2], out build)) return false;
+        if (parts.Length > 3 && !int.TryParse(parts[3], out revision)) return false;
+        
+        version = new Version(major, minor, build, revision);
+        return true;
+    }
 }

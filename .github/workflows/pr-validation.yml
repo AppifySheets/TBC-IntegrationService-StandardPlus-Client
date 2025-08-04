@@ -31,7 +31,7 @@ jobs:
             .nuke/temp
             ~/.nuget/packages
           key: ${{ runner.os }}-${{ hashFiles('global.json', '**/*.csproj', '**/Directory.*.props') }}
-      - name: 'Run: Compile'
-        run: ./.github/build.cmd Compile
+      - name: 'Run: CheckVersion, Compile'
+        run: ./.github/build.cmd CheckVersion Compile
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
