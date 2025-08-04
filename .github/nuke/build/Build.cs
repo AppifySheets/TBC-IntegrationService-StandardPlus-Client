@@ -214,7 +214,8 @@ class Build : NukeBuild
                 .SetSymbolPackageFormat(DotNetSymbolPackageFormat.snupkg)
                 // Include source for source link
                 .SetIncludeSource(false)
-                .SetNoBuild(true)
+                // Build is required to run the CopyProjectReferencesToPackage target
+                .SetNoBuild(false)
                 .SetNoRestore(true)
                 .CombineWith(packableProjects, (settings, project) => settings
                     .SetProject(project)));
