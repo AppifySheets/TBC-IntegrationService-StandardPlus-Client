@@ -14,9 +14,12 @@
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <!-- Documentation and symbol settings inherited from Directory.Build.props -->
         <IsPackable>true</IsPackable>
+        <!-- Include project references in the NuGet package -->
+        <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- Include BankIntegrationTypes as a bundled dependency in the NuGet package -->
         <ProjectReference Include="..\AppifySheets.Immutable.BankIntegrationTypes\AppifySheets.Immutable.BankIntegrationTypes.csproj" />
     </ItemGroup>
 
@@ -30,5 +33,13 @@
         <None Include="..\README.md" Pack="true" PackagePath="\" />
         <None Include="..\icon.png" Pack="true" PackagePath="\" Condition="Exists('..\icon.png')" />
     </ItemGroup>
+
+    <!-- Target to include project reference DLLs in NuGet package -->
+    <Target Name="CopyProjectReferencesToPackage" DependsOnTargets="BuildOnlySettings;ResolveReferences">
+        <ItemGroup>
+            <!-- Include the BankIntegrationTypes DLL -->
+            <BuildOutputInPackage Include="$(OutputPath)AppifySheets.Immutable.BankIntegrationTypes.dll" />
+        </ItemGroup>
+    </Target>
 
 </Project>
