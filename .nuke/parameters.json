@@ -1,0 +1,4 @@
+{
+  "$schema": "build.schema.json",
+  "Solution": "AppifySheets.TBC.IntegrationService.Client.Core.sln"
+}
