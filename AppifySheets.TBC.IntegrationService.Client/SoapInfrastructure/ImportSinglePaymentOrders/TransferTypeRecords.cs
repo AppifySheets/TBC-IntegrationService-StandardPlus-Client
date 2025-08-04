@@ -22,4 +22,4 @@ public record TransferToOtherBankNationalCurrencyPaymentOrderIo(BankAccountWithC
 public record TreasuryTransferPaymentOrderIo(long TreasuryCode) : TransferTypeRecord, ITreasury;
 
 [UsedImplicitly]
-public record TransferToOwnAccountPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency, string Description) : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription;
+public record TransferToOwnAccountPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency) : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription;

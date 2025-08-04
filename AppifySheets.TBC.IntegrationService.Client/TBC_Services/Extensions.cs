@@ -22,7 +22,7 @@ public static class XmlExtensions
         var serializer = new XmlSerializer(type);
 
         using TextReader reader = new StringReader(objectData);
-        var result = serializer.Deserialize(reader);
+        var result = serializer.Deserialize(reader)!;
 
         return result;
     }

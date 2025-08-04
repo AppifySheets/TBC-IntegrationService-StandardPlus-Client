@@ -6,7 +6,8 @@
 // }
 
 using System.Xml.Serialization;
-using AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure;
+
+namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.PasswordChangeRelated;
 
 [XmlRoot(ElementName="ChangePasswordResponseIo")]
 public class ChangePasswordResponseIo : ISoapResponse { 

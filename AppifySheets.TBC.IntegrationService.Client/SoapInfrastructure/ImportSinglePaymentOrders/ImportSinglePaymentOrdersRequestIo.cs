@@ -55,8 +55,6 @@ public record ImportSinglePaymentOrdersRequestIo(TransferTypeRecord TransferType
 
 public static class UseExtensions
 {
-    public static TY Use<T, TY>(this T t, Func<T, TY> tTy) => tTy(t);
-    
     public static string FormatXml(this string xml)
     {
         try

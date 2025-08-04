@@ -16,7 +16,7 @@ public class Pager
 [XmlRoot(ElementName = "result")]
 public class ResultXml
 {
-    [XmlElement(ElementName = "pager")] public Pager Pager { get; init; }
+    [XmlElement(ElementName = "pager")] public required Pager Pager { get; init; }
 
     [XmlElement(ElementName = "totalCount")]
     public int TotalCount { get; init; }
@@ -26,91 +26,91 @@ public class ResultXml
 public class AmountT
 {
     [XmlElement(ElementName = "amount")] public decimal Amount { get; init; }
-    [XmlElement(ElementName = "currency")] public string Currency { get; init; }
+    [XmlElement(ElementName = "currency")] public required string Currency { get; init; }
 }
 
 [XmlRoot(ElementName = "accountMovement")]
 public class AccountMovement
 {
     [XmlElement(ElementName = "movementId")]
-    public string MovementId { get; init; }
+    public required string MovementId { get; init; }
 
     [XmlElement(ElementName = "externalPaymentId")]
-    public string ExternalPaymentId { get; init; }
+    public string? ExternalPaymentId { get; init; }
 
     [XmlElement(ElementName = "debitCredit")]
-    public string DebitCredit { get; init; }
+    public required string DebitCredit { get; init; }
 
     [XmlElement(ElementName = "valueDate")]
     public DateTime ValueDate { get; init; }
 
     [XmlElement(ElementName = "description")]
-    public string Description { get; init; }
+    public required string Description { get; init; }
 
-    [XmlElement(ElementName = "amount")] public AmountT Amount { get; init; }
+    [XmlElement(ElementName = "amount")] public required AmountT Amount { get; init; }
 
     [XmlElement(ElementName = "accountNumber")]
-    public string AccountNumber { get; init; }
+    public string? AccountNumber { get; init; }
 
     [XmlElement(ElementName = "accountName")]
-    public string AccountName { get; init; }
+    public string? AccountName { get; init; }
 
     [XmlElement(ElementName = "additionalInformation")]
-    public string AdditionalInformation { get; init; }
+    public string? AdditionalInformation { get; init; }
 
     [XmlElement(ElementName = "documentDate")]
-    public string DocumentDate { get; init; }
+    public string? DocumentDate { get; init; }
 
     [XmlElement(ElementName = "documentNumber")]
-    public string DocumentNumber { get; init; }
+    public string? DocumentNumber { get; init; }
 
     [XmlElement(ElementName = "partnerAccountNumber")]
-    public string PartnerAccountNumber { get; init; }
+    public string? PartnerAccountNumber { get; init; }
 
     [XmlElement(ElementName = "partnerName")]
-    public string PartnerName { get; init; }
+    public string? PartnerName { get; init; }
 
     [XmlElement(ElementName = "partnerTaxCode")]
-    public string PartnerTaxCode { get; init; }
+    public string? PartnerTaxCode { get; init; }
 
     [XmlElement(ElementName = "partnerBankCode")]
-    public string PartnerBankCode { get; init; }
+    public string? PartnerBankCode { get; init; }
 
     [XmlElement(ElementName = "partnerBank")]
-    public string PartnerBank { get; init; }
+    public string? PartnerBank { get; init; }
 
     [XmlElement(ElementName = "taxpayerCode")]
-    public string TaxpayerCode { get; init; }
+    public string? TaxpayerCode { get; init; }
 
     [XmlElement(ElementName = "taxpayerName")]
-    public string TaxpayerName { get; init; }
+    public string? TaxpayerName { get; init; }
 
     [XmlElement(ElementName = "operationCode")]
-    public string OperationCode { get; init; }
+    public string? OperationCode { get; init; }
 
     [XmlElement(ElementName = "partnerDocumentType")]
-    public string PartnerDocumentType { get; init; }
+    public string? PartnerDocumentType { get; init; }
 
     [XmlElement(ElementName = "statusCode")]
-    public string StatusCode { get; init; }
+    public string? StatusCode { get; init; }
 
     [XmlElement(ElementName = "transactionType")]
-    public string TransactionType { get; init; }
+    public string? TransactionType { get; init; }
 
     [XmlElement(ElementName = "additionalDescription")]
-    public string AdditionalDescription { get; init; }
+    public string? AdditionalDescription { get; init; }
 
     [XmlElement(ElementName = "partnerPersonalNumber")]
-    public string PartnerPersonalNumber { get; init; }
+    public string? PartnerPersonalNumber { get; init; }
 
     [XmlElement(ElementName = "partnerDocumentNumber")]
-    public string PartnerDocumentNumber { get; init; }
+    public string? PartnerDocumentNumber { get; init; }
 
     [XmlElement(ElementName = "paymentId")]
-    public string PaymentId { get; init; }
+    public string? PaymentId { get; init; }
 
     [XmlElement(ElementName = "parentExternalPaymentId")]
-    public string ParentExternalPaymentId { get; init; }
+    public string? ParentExternalPaymentId { get; init; }
 }
 
 [XmlRoot(ElementName = "GetAccountMovementsResponseIo")]
@@ -119,8 +119,8 @@ public class GetAccountMovementsResponseIo : ISoapResponse
     [XmlElement(ElementName = "result")] public ResultXml? ResultXml { get; init; }
 
     [XmlElement(ElementName = "accountMovement")]
-    public List<AccountMovement>? AccountMovement { get; init; }
+    public List<AccountMovement> AccountMovement { get; init; } = [];
 
     [XmlAttribute(AttributeName = "ns2", Namespace = "http://www.w3.org/2000/xmlns/")]
-    public string Ns2 { get; init; }
+    public string? Ns2 { get; init; }
 }
