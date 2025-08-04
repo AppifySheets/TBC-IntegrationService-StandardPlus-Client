@@ -7,8 +7,10 @@
 Service Documentation by the TBC Bank is here - https://developers.tbcbank.ge/docs/dbi-overview
 
 ## Following services are implemented:
-* [Import Single Payments](https://developers.tbcbank.ge/docs/import-single-payments)
-* [Account Movement](https://developers.tbcbank.ge/docs/account-movement)
+* [Import Single Payment Orders](https://developers.tbcbank.ge/docs/import-single-payments) - Execute various types of payment transfers
+* [Get Account Movements](https://developers.tbcbank.ge/docs/account-movement) - Retrieve account transaction history
+* [Get Payment Order Status](https://developers.tbcbank.ge/docs/get-payment-order-status) - Check status of submitted payment orders
+* [Change Password](https://developers.tbcbank.ge/docs/change-password) - Change API user password
 
 ### Usage
 See the [Demo](AppifySheets.TBC.IntegrationService.Client.DemoConsole/Program.cs)
@@ -24,8 +26,9 @@ var accountMovements =
 
 var checkStatus = await tbcSoapCaller.GetDeserialized(new GetPaymentOrderStatusRequestIo(1632027071));
 
-var ownAccountGEL = BankAccountWithCurrencyV.Create(new BankAccountV("GE31TB7467936080100003"), CurrencyV.GEL).Value;
-var ownAccountUSD = BankAccountWithCurrencyV.Create(new BankAccountV("GE47TB7467936170100001"), CurrencyV.USD).Value;
+// Example IBAN format: GE00TB0000000000000000
+var ownAccountGEL = BankAccountWithCurrencyV.Create(new BankAccountV("GE00TB0000000000000001"), CurrencyV.GEL).Value;
+var ownAccountUSD = BankAccountWithCurrencyV.Create(new BankAccountV("GE00TB0000000000000002"), CurrencyV.USD).Value;
 
 var transferTypeRecordSpecific = new TransferTypeRecordSpecific
 {
@@ -39,7 +42,7 @@ var transferTypeRecordSpecific = new TransferTypeRecordSpecific
 var withinBankGel2 = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(
     new TransferWithinBankPaymentOrderIo
     {
-        RecipientAccountWithCurrency = BankAccountWithCurrencyV.Create(new BankAccountV("GE86TB1144836120100002"), CurrencyV.GEL).Value,
+        RecipientAccountWithCurrency = BankAccountWithCurrencyV.Create(new BankAccountV("GE00TB0000000000000003"), CurrencyV.GEL).Value,
         TransferTypeRecordSpecific = transferTypeRecordSpecific
     }));
 
@@ -50,13 +53,13 @@ var withinBankCurrency = await tbcSoapCaller.GetDeserialized(new ImportSinglePay
         {
             SenderAccountWithCurrency = ownAccountUSD
         },
-        RecipientAccountWithCurrency = BankAccountWithCurrencyV.Create(new BankAccountV("GE86TB1144836120100002"), CurrencyV.USD).Value,
+        RecipientAccountWithCurrency = BankAccountWithCurrencyV.Create(new BankAccountV("GE00TB0000000000000004"), CurrencyV.USD).Value,
     }));
 
 var toAnotherBankGel = await tbcSoapCaller.GetDeserialized(
     new ImportSinglePaymentOrdersRequestIo(
         new TransferToOtherBankNationalCurrencyPaymentOrderIo(
-            BankAccountWithCurrencyV.Create(new BankAccountV("GE33BG0000000263255500"), CurrencyV.GEL).Value, "123123123")
+            BankAccountWithCurrencyV.Create(new BankAccountV("GE00BG0000000000000001"), CurrencyV.GEL).Value, "123456789")
         {
             TransferTypeRecordSpecific = transferTypeRecordSpecific
         }));
@@ -64,7 +67,7 @@ var toAnotherBankGel = await tbcSoapCaller.GetDeserialized(
 var toAnotherBankCurrencyGood = await tbcSoapCaller.GetDeserialized(
     new ImportSinglePaymentOrdersRequestIo(
         new TransferToOtherBankForeignCurrencyPaymentOrderIo("test", "test", "SHA", "TEST",
-            BankAccountWithCurrencyV.Create(new BankAccountV("GE33BG0000000263255500"), CurrencyV.USD).Value)
+            BankAccountWithCurrencyV.Create(new BankAccountV("GE00BG0000000000000002"), CurrencyV.USD).Value)
         {
             TransferTypeRecordSpecific = transferTypeRecordSpecific with { SenderAccountWithCurrency = ownAccountUSD }
         }));
@@ -72,7 +75,7 @@ var toAnotherBankCurrencyGood = await tbcSoapCaller.GetDeserialized(
 var toAnotherBankCurrencyBad = await tbcSoapCaller.GetDeserialized(
     new ImportSinglePaymentOrdersRequestIo(
         new TransferToOtherBankForeignCurrencyPaymentOrderIo("test", "test", "SHA", "TEST",
-            BankAccountWithCurrencyV.Create(new BankAccountV("GE33BG0000000263255500"), CurrencyV.USD).Value)
+            BankAccountWithCurrencyV.Create(new BankAccountV("GE00BG0000000000000002"), CurrencyV.USD).Value)
         {
             TransferTypeRecordSpecific = transferTypeRecordSpecific with { SenderAccountWithCurrency = ownAccountUSD }
         }));
@@ -82,7 +85,7 @@ var toChina = await tbcSoapCaller.GetDeserialized(
         new TransferToOtherBankForeignCurrencyPaymentOrderIo( "China",
             // "ICBKCNBJSZN", "INDUSTRIAL AND COMMERCIAL BANK OF CHINA SHENZHEN BRANCH", "SHA", "Invoice(LZSK202311028)",
             "ICBKCNBJSZN", "INDUSTRIAL AND COMMERCIAL BANK OF CHINA SHENZHEN BRANCH", "SHA",
-            BankAccountWithCurrencyV.Create(new BankAccountV("4000109819100186641"), CurrencyV.USD).Value)
+            BankAccountWithCurrencyV.Create(new BankAccountV("CN0000000000000000001"), CurrencyV.USD).Value)
         {
             TransferTypeRecordSpecific = transferTypeRecordSpecific with
             {
