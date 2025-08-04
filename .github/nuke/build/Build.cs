@@ -199,11 +199,10 @@ class Build : NukeBuild
             
             PackagesDirectory.CreateOrCleanDirectory();
 
-            // Pack projects that are marked as packable
+            // Pack only the main client project
             var packableProjects = new[]
             {
-                RootDirectory / "AppifySheets.TBC.IntegrationService.Client" / "AppifySheets.TBC.IntegrationService.Client.csproj",
-                RootDirectory / "AppifySheets.Immutable.BankIntegrationTypes" / "AppifySheets.Immutable.BankIntegrationTypes.csproj"
+                RootDirectory / "AppifySheets.TBC.IntegrationService.Client" / "AppifySheets.TBC.IntegrationService.Client.csproj"
             };
 
             DotNetPack(s => s
