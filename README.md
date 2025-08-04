@@ -6,6 +6,12 @@
 
 Service Documentation by the TBC Bank is here - https://developers.tbcbank.ge/docs/dbi-overview
 
+## Installation
+
+```bash
+dotnet add package AppifySheets.TBC.IntegrationService.Client
+```
+
 ## Following services are implemented:
 * [Import Single Payment Orders](https://developers.tbcbank.ge/docs/import-single-payments) - Execute various types of payment transfers
 * [Get Account Movements](https://developers.tbcbank.ge/docs/account-movement) - Retrieve account transaction history
