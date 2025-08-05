@@ -14,12 +14,38 @@ using CSharpFunctionalExtensions;
 
 namespace AppifySheets.TBC.IntegrationService.Client.TBC_Services;
 
-// ReSharper disable once InconsistentNaming
+/// <summary>
+/// TBC Bank SOAP API client for executing banking operations
+/// </summary>
 public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredentialsWithCertificate)
 {
-    public async Task<Result<TDeserializeInto>> GetDeserialized<TDeserializeInto>(RequestSoap<TDeserializeInto> RequestSoap) where TDeserializeInto : ISoapResponse
+    readonly TBCApiCredentialsWithCertificate _credentials = tbcApiCredentialsWithCertificate ?? throw new ArgumentNullException(nameof(tbcApiCredentialsWithCertificate));
+    
+    /// <summary>
+    /// Creates a TBC SOAP caller instance with validation
+    /// </summary>
+    public static TBCSoapCaller Create(TBCApiCredentialsWithCertificate credentials) => new(credentials);
+
+    /// <summary>
+    /// Creates a TBC SOAP caller with all parameters
+    /// </summary>
+    public static Result<TBCSoapCaller> Create(
+        string username, 
+        string password,
+        string certificateFileName, 
+        string certificatePassword)
     {
-        var response = await CallTBCServiceAsync(RequestSoap);
+        var credentialsResult = TBCApiCredentialsWithCertificate.Create(
+            username, password, certificateFileName, certificatePassword);
+            
+        if (credentialsResult.IsFailure)
+            return Result.Failure<TBCSoapCaller>(credentialsResult.Error);
+            
+        return Create(credentialsResult.Value);
+    }
+    public async Task<Result<TDeserializeInto>> GetDeserialized<TDeserializeInto>(RequestSoap<TDeserializeInto> requestSoap) where TDeserializeInto : ISoapResponse
+    {
+        var response = await CallTBCServiceAsync(requestSoap);
         // ReSharper disable once ConvertIfStatementToReturnStatement
         if (response.IsFailure) return response.ConvertFailure<TDeserializeInto>();
 
@@ -69,7 +95,7 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
 
     public Task<Result<string>> CallTBCServiceAsync<TDeserializeInto>(RequestSoap<TDeserializeInto> requestSoap) where TDeserializeInto : ISoapResponse
     {
-        var template = GetPerformedActionFor(tbcApiCredentialsWithCertificate.TBCApiCredentials, requestSoap.TBCServiceAction, requestSoap.SoapXml(), requestSoap.Nonce);
+        var template = GetPerformedActionFor(_credentials.Credentials, requestSoap.TBCServiceAction, requestSoap.SoapXml(), requestSoap.Nonce);
 
         return CallTBCServiceAsync(template);
     }
@@ -117,7 +143,7 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
         X509Certificate2Collection GetCertificates()
         {
             var collection = new X509Certificate2Collection();
-            collection.Import(tbcApiCredentialsWithCertificate.CertificateFileName, tbcApiCredentialsWithCertificate.CertificatePassword, X509KeyStorageFlags.PersistKeySet);
+            collection.Import(_credentials.CertificateFileName, _credentials.CertificatePassword, X509KeyStorageFlags.PersistKeySet);
             return collection;
         }
     }

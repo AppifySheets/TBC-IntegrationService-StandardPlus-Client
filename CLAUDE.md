@@ -55,7 +55,7 @@ dotnet run --project AppifySheets.TBC.IntegrationService.Client.DemoConsole
 
 ### When Working with Transfer Types
 - All transfer types implement specific interfaces that define required fields
-- Use `TransferTypeRecordSpecific` for common transfer fields
+- Use `BankTransferCommonDetails` for common transfer fields
 - Each transfer type has its own validation rules and required fields
 
 ### Testing Approach
