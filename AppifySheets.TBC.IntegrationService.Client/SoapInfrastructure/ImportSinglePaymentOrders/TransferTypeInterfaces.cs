@@ -2,9 +2,9 @@
 
 namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSinglePaymentOrders;
 
-public sealed record TransferTypeRecordSpecific
+public sealed record BankTransferCommonDetails
 {
-    public required BankAccountWithCurrencyV SenderAccountWithCurrency { get; init; }
+    public required BankAccount SenderAccountWithCurrency { get; init; }
     public required long DocumentNumber { get; init; }
     public required decimal Amount { get; init; }
     public required string BeneficiaryName { get; init; }
@@ -15,15 +15,15 @@ public sealed record TransferTypeRecordSpecific
 
 public abstract record TransferTypeRecord
 {
-    public required TransferTypeRecordSpecific TransferTypeRecordSpecific { get; init; }
+    public required BankTransferCommonDetails BankTransferCommonDetails { get; init; }
 
-    public BankAccountWithCurrencyV SenderAccountWithCurrency => TransferTypeRecordSpecific.SenderAccountWithCurrency;
-    public long DocumentNumber => TransferTypeRecordSpecific.DocumentNumber;
-    public decimal Amount => TransferTypeRecordSpecific.Amount;
-    public string BeneficiaryName => TransferTypeRecordSpecific.BeneficiaryName;
-    public string? PersonalNumber => TransferTypeRecordSpecific.PersonalNumber;
-    public string Description => TransferTypeRecordSpecific.Description;
-    public string? AdditionalDescription => TransferTypeRecordSpecific.AdditionalDescription;
+    public BankAccount SenderAccountWithCurrency => BankTransferCommonDetails.SenderAccountWithCurrency;
+    public long DocumentNumber => BankTransferCommonDetails.DocumentNumber;
+    public decimal Amount => BankTransferCommonDetails.Amount;
+    public string BeneficiaryName => BankTransferCommonDetails.BeneficiaryName;
+    public string? PersonalNumber => BankTransferCommonDetails.PersonalNumber;
+    public string Description => BankTransferCommonDetails.Description;
+    public string? AdditionalDescription => BankTransferCommonDetails.AdditionalDescription;
 }
 
 public interface IBeneficiaryName
@@ -44,7 +44,7 @@ public interface ITreasury
 
 public interface IRecipient
 {
-    public BankAccountWithCurrencyV RecipientAccountWithCurrency { get; }
+    public BankAccount RecipientAccountWithCurrency { get; }
 }
 
 public interface IBeneficiaryTaxCode

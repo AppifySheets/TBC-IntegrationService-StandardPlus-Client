@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\AppifySheets.TBC.IntegrationService.Client\AppifySheets.TBC.IntegrationService.Client.csproj" />
+      <ProjectReference Include="..\AppifySheets.Immutable.BankIntegrationTypes\AppifySheets.Immutable.BankIntegrationTypes.csproj" />
     </ItemGroup>
 
 </Project>

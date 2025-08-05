@@ -4,7 +4,7 @@
 
 #### You will require 4 things from the TBC Bank - 1) `.pfx` certificate, 2) `Username`, 3) `Password` and 4) `certificate_password`
 
-Service Documentation by the TBC Bank is here - https://developers.tbcbank.ge/docs/dbi-overview
+Service Documentation by the TBC Bank is here - <a href="https://developers.tbcbank.ge/docs/dbi-overview" target="_blank">https://developers.tbcbank.ge/docs/dbi-overview</a>
 
 ## Installation
 
@@ -13,23 +13,39 @@ dotnet add package AppifySheets.TBC.IntegrationService.Client
 ```
 
 ## Following services are implemented:
-* [Import Single Payment Orders](https://developers.tbcbank.ge/docs/import-single-payments) - Execute various types of payment transfers
-* [Get Account Movements](https://developers.tbcbank.ge/docs/account-movement) - Retrieve account transaction history
-* [Get Payment Order Status](https://developers.tbcbank.ge/docs/get-payment-order-status) - Check status of submitted payment orders
-* [Change Password](https://developers.tbcbank.ge/docs/change-password) - Change API user password
+* <a href="https://developers.tbcbank.ge/docs/import-single-payments" target="_blank">Import Single Payment Orders</a> - Execute various types of payment transfers
+* <a href="https://developers.tbcbank.ge/docs/account-movement" target="_blank">Get Account Movements</a> - Retrieve account transaction history
+* <a href="https://developers.tbcbank.ge/docs/payment-order-status" target="_blank">Get Payment Order Status</a> - Check status of submitted payment orders
+* <a href="https://developers.tbcbank.ge/docs/change-password" target="_blank">Change Password</a> - Change API user password
 
 ## Usage Examples
 
 ### Setup
 ```csharp
-var credentials = new TBCApiCredentials("Username", "Password"); // Obtain API Credentials & Certificate with password from the Bank/Banker
-var tbcApiCredentialsWithCertificate = new TBCApiCredentialsWithCertificate(credentials, "TBCIntegrationService.pfx", "certificate_password");
+// Create API credentials with validation
+var credentialsResult = TBCApiCredentials.Create("Username", "Password");
+if (credentialsResult.IsFailure)
+    return credentialsResult.Error;
 
-var tbcSoapCaller = new TBCSoapCaller(tbcApiCredentialsWithCertificate);
+// Add certificate authentication
+var credentialsWithCertResult = TBCApiCredentialsWithCertificate.Create(
+    credentialsResult.Value, 
+    "TBCIntegrationService.pfx", 
+    "certificate_password");
+    
+// Create SOAP caller
+var soapCallerResult = TBCSoapCaller.Create(credentialsWithCertResult.Value);
+var tbcSoapCaller = soapCallerResult.Value;
 
-// Example IBAN format: GE00TB0000000000000000
-var ownAccountGEL = BankAccountWithCurrencyV.Create(new BankAccountV("GE00TB0000000000000001"), CurrencyV.GEL).Value;
-var ownAccountUSD = BankAccountWithCurrencyV.Create(new BankAccountV("GE00TB0000000000000002"), CurrencyV.USD).Value;
+// Create bank accounts
+var ownAccountGEL = BankAccount.Create("GE00TB0000000000000001", "GEL").Value;
+var ownAccountUSD = BankAccount.Create("GE00TB0000000000000002", "USD").Value;
+
+// Or create components separately
+var ibanResult = Iban.Create("GE00TB0000000000000001");
+var accountResult = BankAccount.Create(ibanResult.Value, Currency.GEL);
+if (accountResult.IsFailure)
+    return accountResult.Error;
 ```
 
 ### Account Operations
@@ -84,7 +100,7 @@ var passwordChangeResult = await tbcSoapCaller.GetDeserialized(
 #### Common Transfer Parameters
 ```csharp
 // Common parameters for all transfer types
-var transferTypeRecordSpecific = new TransferTypeRecordSpecific
+var bankTransferCommonDetails = new BankTransferCommonDetails
 {
     DocumentNumber = 123,
     Amount = 0.01m,
@@ -102,9 +118,8 @@ var transferTypeRecordSpecific = new TransferTypeRecordSpecific
 var withinBankGel = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(
     new TransferWithinBankPaymentOrderIo
     {
-        RecipientAccountWithCurrency = BankAccountWithCurrencyV.Create(
-            new BankAccountV("GE00TB0000000000000003"), CurrencyV.GEL).Value,
-        TransferTypeRecordSpecific = transferTypeRecordSpecific
+        RecipientAccountWithCurrency = BankAccount.Create("GE00TB0000000000000003", "GEL").Value,
+        BankTransferCommonDetails = bankTransferCommonDetails
     }));
 ```
 
@@ -113,12 +128,11 @@ var withinBankGel = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentO
 var withinBankCurrency = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(
     new TransferWithinBankPaymentOrderIo
     {
-        TransferTypeRecordSpecific = transferTypeRecordSpecific with
+        BankTransferCommonDetails = bankTransferCommonDetails with
         {
             SenderAccountWithCurrency = ownAccountUSD
         },
-        RecipientAccountWithCurrency = BankAccountWithCurrencyV.Create(
-            new BankAccountV("GE00TB0000000000000004"), CurrencyV.USD).Value,
+        RecipientAccountWithCurrency = BankAccount.Create("GE00TB0000000000000004", "USD").Value,
     }));
 ```
 </details>
@@ -131,10 +145,10 @@ var withinBankCurrency = await tbcSoapCaller.GetDeserialized(new ImportSinglePay
 var toAnotherBankGel = await tbcSoapCaller.GetDeserialized(
     new ImportSinglePaymentOrdersRequestIo(
         new TransferToOtherBankNationalCurrencyPaymentOrderIo(
-            BankAccountWithCurrencyV.Create(new BankAccountV("GE00BG0000000000000001"), CurrencyV.GEL).Value, 
+            BankAccount.Create("GE00BG0000000000000001", "GEL").Value, 
             "123456789") // Beneficiary tax code
         {
-            TransferTypeRecordSpecific = transferTypeRecordSpecific
+            BankTransferCommonDetails = bankTransferCommonDetails
         }));
 ```
 
@@ -147,9 +161,9 @@ var toAnotherBankCurrency = await tbcSoapCaller.GetDeserialized(
             "BANKSWIFT", // Bank SWIFT/BIC code
             "SHA", // Charge type: SHA (shared), OUR (sender pays), BEN (beneficiary pays)
             "Payment Reference",
-            BankAccountWithCurrencyV.Create(new BankAccountV("GE00BG0000000000000002"), CurrencyV.USD).Value)
+            BankAccount.Create("GE00BG0000000000000002", "USD").Value)
         {
-            TransferTypeRecordSpecific = transferTypeRecordSpecific with 
+            BankTransferCommonDetails = bankTransferCommonDetails with 
             { 
                 SenderAccountWithCurrency = ownAccountUSD 
             }
@@ -165,9 +179,9 @@ var toChina = await tbcSoapCaller.GetDeserialized(
             "ICBKCNBJSZN", // Bank SWIFT code
             "INDUSTRIAL AND COMMERCIAL BANK OF CHINA SHENZHEN BRANCH", // Bank name
             "SHA", // Charge type
-            BankAccountWithCurrencyV.Create(new BankAccountV("CN0000000000000000001"), CurrencyV.USD).Value)
+            BankAccount.Create("CN0000000000000000001", "USD").Value)
         {
-            TransferTypeRecordSpecific = transferTypeRecordSpecific with
+            BankTransferCommonDetails = bankTransferCommonDetails with
             {
                 SenderAccountWithCurrency = ownAccountUSD,
                 BeneficiaryName = "Shenzhen Example Company Ltd"
@@ -185,7 +199,7 @@ var toTreasury = await tbcSoapCaller.GetDeserialized(
     new ImportSinglePaymentOrdersRequestIo(
         new TreasuryTransferPaymentOrderIo(101001000) // Treasury code
         { 
-            TransferTypeRecordSpecific = transferTypeRecordSpecific 
+            BankTransferCommonDetails = bankTransferCommonDetails 
         }));
 ```
 </details>

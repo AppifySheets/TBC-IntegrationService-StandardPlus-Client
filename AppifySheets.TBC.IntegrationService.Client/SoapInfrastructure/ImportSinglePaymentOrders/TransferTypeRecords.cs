@@ -5,7 +5,7 @@ namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSi
 
 public record TransferWithinBankPaymentOrderIo : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription
 {
-    public required BankAccountWithCurrencyV RecipientAccountWithCurrency { get; init; }
+    public required BankAccount RecipientAccountWithCurrency { get; init; }
 }
 
 public record TransferToOtherBankForeignCurrencyPaymentOrderIo(
@@ -13,13 +13,13 @@ public record TransferToOtherBankForeignCurrencyPaymentOrderIo(
     string BeneficiaryBankCode,
     string BeneficiaryBankName,
     string ChargeDetails,
-    BankAccountWithCurrencyV RecipientAccountWithCurrency)
+    BankAccount RecipientAccountWithCurrency)
     : TransferTypeRecord, IBeneficiaryForCurrencyTransfer, IRecipient, IBeneficiaryName, IDescription;
 
-public record TransferToOtherBankNationalCurrencyPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency, string BeneficiaryTaxCode)
+public record TransferToOtherBankNationalCurrencyPaymentOrderIo(BankAccount RecipientAccountWithCurrency, string BeneficiaryTaxCode)
     : TransferTypeRecord, IBeneficiaryTaxCode, IRecipient, IBeneficiaryName, IDescription;
 
 public record TreasuryTransferPaymentOrderIo(long TreasuryCode) : TransferTypeRecord, ITreasury;
 
 [UsedImplicitly]
-public record TransferToOwnAccountPaymentOrderIo(BankAccountWithCurrencyV RecipientAccountWithCurrency) : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription;
+public record TransferToOwnAccountPaymentOrderIo(BankAccount RecipientAccountWithCurrency) : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription;
