@@ -12,8 +12,8 @@ namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.Password
 [XmlRoot(ElementName="ChangePasswordResponseIo")]
 public class ChangePasswordResponseIo : ISoapResponse { 
 
-    [XmlElement(ElementName="message")] 
-    public string? Message { get; init; } 
+    [XmlElement(ElementName="message")]
+    public string? Message { get; init; }
 
     [XmlAttribute(AttributeName="i")] 
     public string? I { get; init; } 

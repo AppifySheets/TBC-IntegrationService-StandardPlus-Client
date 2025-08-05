@@ -20,7 +20,8 @@
 
     <ItemGroup>
         <!-- Include BankIntegrationTypes as a bundled dependency in the NuGet package -->
-        <ProjectReference Include="..\AppifySheets.Immutable.BankIntegrationTypes\AppifySheets.Immutable.BankIntegrationTypes.csproj" />
+        <!-- PrivateAssets="all" prevents it from being listed as a NuGet dependency -->
+        <ProjectReference Include="..\AppifySheets.Immutable.BankIntegrationTypes\AppifySheets.Immutable.BankIntegrationTypes.csproj" PrivateAssets="all" />
     </ItemGroup>
 
     <ItemGroup>
