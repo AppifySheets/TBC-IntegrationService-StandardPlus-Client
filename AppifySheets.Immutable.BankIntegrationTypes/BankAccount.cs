@@ -19,11 +19,16 @@ public record BankAccount
     /// <summary>
     /// Creates a bank account with validation
     /// </summary>
-    public static Result<BankAccount> Create(string iban, string currencyCode)
+    /// <param name="iban">The IBAN or account number</param>
+    /// <param name="currencyCode">The currency code</param>
+    /// <param name="validateIban">Whether to validate the IBAN format (default: true)</param>
+    public static Result<BankAccount> Create(string iban, string currencyCode, bool validateIban = true)
     {
-        var ibanResult = Iban.Create(iban);
+        // Create IBAN with or without validation based on the flag
+        var ibanResult = validateIban ? Iban.Create(iban) : Iban.CreateWithoutValidation(iban);
+            
         if (ibanResult.IsFailure)
-            return Result.Failure<BankAccount>($"Invalid IBAN: {ibanResult.Error}");
+            return Result.Failure<BankAccount>($"Invalid {(validateIban ? "IBAN" : "account number")}: {ibanResult.Error}");
             
         var currencyResult = Currency.Create(currencyCode);
         if (currencyResult.IsFailure)
