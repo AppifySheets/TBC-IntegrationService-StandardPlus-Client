@@ -40,6 +40,19 @@ public record Iban
         return Result.Success(new Iban(normalized));
     }
     
+    /// <summary>
+    /// Creates an IBAN instance without validation (for non-IBAN account numbers)
+    /// </summary>
+    internal static Result<Iban> CreateWithoutValidation(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return Result.Failure<Iban>("Account number cannot be empty");
+            
+        // Just normalize by removing spaces and converting to uppercase
+        var normalized = value.Replace(" ", "").ToUpperInvariant();
+        return Result.Success(new Iban(normalized));
+    }
+    
     
     public override string ToString() => Value;
     
