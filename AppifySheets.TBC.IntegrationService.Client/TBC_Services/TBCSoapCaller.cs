@@ -100,8 +100,6 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
         return CallTBCServiceAsync(template);
     }
 
-    
-
     async Task<Result<string>> CallTBCServiceAsync(PerformedActionSoapEnvelope performedActionSoapEnvelope)
     {
         const string url = "https://secdbi.tbconline.ge/dbi/dbiService";
@@ -137,7 +135,11 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
         }
         catch (Exception)
         {
-            return Result.Failure<string>(responseContent.FormatXml());
+            // Try to parse SOAP fault first, fallback to formatted XML
+            var faultParseResult = TryParseSoapFault(responseContent);
+            return Result.Failure<string>(faultParseResult.IsSuccess
+                ? faultParseResult.Value.FormattedError
+                : responseContent.FormatXml());
         }
 
         X509Certificate2Collection GetCertificates()
@@ -145,6 +147,31 @@ public sealed class TBCSoapCaller(TBCApiCredentialsWithCertificate tbcApiCredent
             var collection = new X509Certificate2Collection();
             collection.Import(_credentials.CertificateFileName, _credentials.CertificatePassword, X509KeyStorageFlags.PersistKeySet);
             return collection;
+        }
+    }
+
+    /// <summary>
+    /// Attempts to parse SOAP fault from response content
+    /// </summary>
+    static Result<SoapFaultResponse> TryParseSoapFault(string responseContent)
+    {
+        try
+        {
+            var doc = new XmlDocument();
+            doc.LoadXml(responseContent);
+
+            var nsManager = new XmlNamespaceManager(doc.NameTable);
+            nsManager.AddNamespace("s", "http://schemas.xmlsoap.org/soap/envelope/");
+
+            var faultNode = doc.SelectSingleNode("//s:Fault", nsManager);
+            if (faultNode == null)
+                return Result.Failure<SoapFaultResponse>("No SOAP fault found in response");
+
+            return faultNode.OuterXml.XmlDeserializeFromString<SoapFaultResponse>();
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure<SoapFaultResponse>($"Failed to parse SOAP fault: {ex.Message}");
         }
     }
 }
