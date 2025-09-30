@@ -1,7 +1,9 @@
 ﻿using AppifySheets.Immutable.BankIntegrationTypes;
+using JetBrains.Annotations;
 
 namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSinglePaymentOrders;
 
+[PublicAPI]
 public sealed record BankTransferCommonDetails
 {
     public required BankAccount SenderAccountWithCurrency { get; init; }
