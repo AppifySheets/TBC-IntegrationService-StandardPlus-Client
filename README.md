@@ -16,7 +16,7 @@ dotnet add package AppifySheets.TBC.IntegrationService.Client
 * <a href="https://developers.tbcbank.ge/docs/import-single-payments" target="_blank">Import Single Payment Orders</a> - Execute various types of payment transfers
 * <a href="https://developers.tbcbank.ge/docs/account-movement" target="_blank">Get Account Movements</a> - Retrieve account transaction history
 * <a href="https://developers.tbcbank.ge/docs/payment-order-status" target="_blank">Get Payment Order Status</a> - Check status of submitted payment orders
-* <a href="https://developers.tbcbank.ge/docs/change-password" target="_blank">Change Password</a> - Change API user password
+* <a href="https://developers.tbcbank.ge/docs/password-change" target="_blank">Change Password</a> - Change API user password
 
 ## Usage Examples
 

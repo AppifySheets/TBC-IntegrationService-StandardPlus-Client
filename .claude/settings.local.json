@@ -3,7 +3,8 @@
     "allow": [
       "Bash(unzip:*)",
       "Bash(git pull:*)",
-      "Bash(python3:*)"
+      "Bash(python3:*)",
+      "Bash(dotnet test)"
     ],
     "deny": []
   }
