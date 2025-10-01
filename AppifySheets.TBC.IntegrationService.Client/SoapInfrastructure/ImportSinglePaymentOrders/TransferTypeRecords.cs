@@ -3,9 +3,10 @@ using JetBrains.Annotations;
 
 namespace AppifySheets.TBC.IntegrationService.Client.SoapInfrastructure.ImportSinglePaymentOrders;
 
-public record TransferWithinBankPaymentOrderIo : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription
+public record TransferWithinBankPaymentOrderIo : TransferTypeRecord, IRecipient, IBeneficiaryName, IDescription, IPersonalNumber
 {
     public required BankAccount RecipientAccountWithCurrency { get; init; }
+    public required string? PersonalNumber { get; init; }
 }
 
 public record TransferToOtherBankForeignCurrencyPaymentOrderIo(
