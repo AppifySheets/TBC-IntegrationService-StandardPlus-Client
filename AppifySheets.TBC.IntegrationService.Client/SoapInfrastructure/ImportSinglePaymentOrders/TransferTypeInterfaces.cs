@@ -10,7 +10,6 @@ public sealed record BankTransferCommonDetails
     public required long DocumentNumber { get; init; }
     public required decimal Amount { get; init; }
     public required string BeneficiaryName { get; init; }
-    public required string? PersonalNumber { get; init; }
     public required string Description { get; init; }
     public string? AdditionalDescription { get; init; }
 }
@@ -23,7 +22,7 @@ public abstract record TransferTypeRecord
     public long DocumentNumber => BankTransferCommonDetails.DocumentNumber;
     public decimal Amount => BankTransferCommonDetails.Amount;
     public string BeneficiaryName => BankTransferCommonDetails.BeneficiaryName;
-    public string? PersonalNumber => BankTransferCommonDetails.PersonalNumber;
+    // public string? PersonalNumber => BankTransferCommonDetails.PersonalNumber;
     public string Description => BankTransferCommonDetails.Description;
     public string? AdditionalDescription => BankTransferCommonDetails.AdditionalDescription;
 }
@@ -31,9 +30,13 @@ public abstract record TransferTypeRecord
 public interface IBeneficiaryName
 {
     public string BeneficiaryName { get; }
-    public string? PersonalNumber { get; }
+    // public string? PersonalNumber { get; }
 }
 
+public interface IPersonalNumber
+{
+    string? PersonalNumber { get; }
+}
 public interface IDescription
 {
     public string Description { get; }

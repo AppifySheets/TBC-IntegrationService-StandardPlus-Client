@@ -33,15 +33,15 @@ var bankTransferCommonDetails = new BankTransferCommonDetails
     Amount = 0.01m,
     BeneficiaryName = "TEST",
     SenderAccountWithCurrency = ownAccountGEL,
-    Description = "TEST",
-    PersonalNumber = null // Adding required PersonalNumber field
+    Description = "TEST"
 };
 
 var withinBankGel2 = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(
     new TransferWithinBankPaymentOrderIo
     {
         RecipientAccountWithCurrency = BankAccount.Create("GE86TB1144836120100002", "GEL").Value,
-        BankTransferCommonDetails = bankTransferCommonDetails
+        BankTransferCommonDetails = bankTransferCommonDetails,
+        PersonalNumber = null
     }));
 
 var withinBankCurrency = await tbcSoapCaller.GetDeserialized(new ImportSinglePaymentOrdersRequestIo(
@@ -52,6 +52,7 @@ var withinBankCurrency = await tbcSoapCaller.GetDeserialized(new ImportSinglePay
             SenderAccountWithCurrency = ownAccountUSD
         },
         RecipientAccountWithCurrency = BankAccount.Create("GE86TB1144836120100002", "USD").Value,
+        PersonalNumber = null
     }));
 
 var toAnotherBankGel = await tbcSoapCaller.GetDeserialized(
